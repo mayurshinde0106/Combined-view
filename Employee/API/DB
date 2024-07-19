@@ -1,1 +1,123 @@
 
+USE [Webapp]
+GO
+
+/****** Object:  StoredProcedure [dbo].[inserttaskprocedure]    Script Date: 19-07-2024 18:27:16 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[inserttaskprocedure]
+@TaskID int,
+@TaskName varchar(20)=null,
+@Description  varchar(20)=null,
+@Status  varchar(20)=null,
+@DueDate date=null,
+@Input varchar(20)=null
+As
+Begin
+if(@Input='create')
+begin
+insert into Task(TaskName,Description,Status,DueDate) values(@TaskName,@Description,@Status,@DueDate);
+select 'inserted successfully' as message;
+end
+if(@Input='update')
+begin
+update Task set TaskName=@TaskName,Description = @Description,Status=@Status,DueDate=@DueDate where TaskID=@TaskID;
+select 'updated successfully' as message;
+end
+if(@Input='delete')
+begin
+delete from Task where TaskID=@TaskID;
+select 'deleteted successfully' as message;
+end
+end
+GO
+
+
+
+///jhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+
+USE [Webapp]
+GO
+
+/****** Object:  StoredProcedure [dbo].[getalltasksprocedure]    Script Date: 19-07-2024 18:28:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE procedure [dbo].[getalltasksprocedure]
+@TaskID int =null,
+@Status varchar(20) =null,
+@Input varchar(20)=null
+as
+begin
+if(@Input='getalltask')
+begin
+select * from Task;
+end
+if(@Input='gettaskbyid')
+begin
+select * from task where TaskID=@TaskID;
+end
+if(@Input='gettaskbystatus')
+begin
+select * from task where Status=@Status;
+end
+if(@Input='counttaskbystatus')
+begin
+select Status,count(task.TaskID) as taskcount from Task group by Status;
+end
+end
+GO
+
+
+// lo0gin
+
+USE [Webapp]
+GO
+
+/****** Object:  Table [dbo].[login]    Script Date: 19-07-2024 18:29:39 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[login](
+	[username] [varchar](20) NULL,
+	[password] [varchar](20) NULL
+) ON [PRIMARY]
+GO
+
+
+// task  
+
+USE [Webapp]
+GO
+
+/****** Object:  Table [dbo].[Task]    Script Date: 19-07-2024 18:30:14 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Task](
+	[TaskID] [int] IDENTITY(1,1) NOT NULL,
+	[TaskName] [varchar](20) NULL,
+	[Description] [varchar](20) NULL,
+	[Status] [varchar](20) NULL,
+	[DueDate] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[TaskID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
